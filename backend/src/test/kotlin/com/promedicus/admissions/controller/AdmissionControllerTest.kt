@@ -245,27 +245,6 @@ class AdmissionControllerTest {
     }
 
     @Test
-    fun `POST external returns 409 for duplicate externalSystemId`() {
-        savedExternal(externalSystemId = "EXT-DUP")
-
-        val body = mapOf(
-            "name" to "Another",
-            "birthday" to "1990-01-01",
-            "sex" to "UNKNOWN",
-            "category" to "NORMAL",
-            "externalSystemId" to "EXT-DUP"
-        )
-
-        mockMvc.perform(
-            post("/api/admissions/external")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json(body))
-        )
-            .andExpect(status().isConflict)
-            .andExpect(jsonPath("$.status").value(409))
-    }
-
-    @Test
     fun `PUT external updates only name, birthday, sex - category unchanged`() {
         val external = savedExternal(
             name = "Original", sex = Sex.MALE, category = Category.OUTPATIENT,

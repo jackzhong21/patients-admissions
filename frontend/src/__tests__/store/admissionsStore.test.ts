@@ -1,8 +1,11 @@
 import { act } from "@testing-library/react";
-import * as api from "@/lib/api/admissions";
+import { fetchAdmissions } from "@/lib/api/admissions";
+import useAdmissionsStore from "@/store/admissionsStore";
 import { Admission, Category, Sex } from "@/types/admission";
 
 jest.mock("@/lib/api/admissions");
+
+const mockedFetchAdmissions = jest.mocked(fetchAdmissions);
 
 const mockAdmission: Admission = {
   id: "test-id-1",
@@ -19,22 +22,25 @@ const mockAdmission: Admission = {
 describe("admissionsStore", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    // Reset the store between tests
-    jest.resetModules();
+    useAdmissionsStore.setState({
+      admissions: [],
+      totalElements: 0,
+      totalPages: 0,
+      page: 0,
+      size: 20,
+      loading: false,
+      error: null,
+    });
   });
 
   it("fetch populates store with admissions", async () => {
-    const mockFetch = jest.spyOn(api, "fetchAdmissions").mockResolvedValue({
+    mockedFetchAdmissions.mockResolvedValue({
       content: [mockAdmission],
       totalElements: 1,
       totalPages: 1,
       page: 0,
       size: 20,
     });
-
-    const { default: useAdmissionsStore } = await import(
-      "@/store/admissionsStore"
-    );
 
     await act(async () => {
       await useAdmissionsStore.getState().fetchAdmissions();
@@ -44,19 +50,15 @@ describe("admissionsStore", () => {
     expect(state.admissions).toHaveLength(1);
     expect(state.admissions[0].name).toBe("Jane Doe");
     expect(state.totalElements).toBe(1);
-    expect(mockFetch).toHaveBeenCalled();
+    expect(mockedFetchAdmissions).toHaveBeenCalled();
   });
 
   it("sets error state on API failure", async () => {
-    jest.spyOn(api, "fetchAdmissions").mockRejectedValue({
+    mockedFetchAdmissions.mockRejectedValue({
       message: "Network error",
       status: 500,
       errors: [],
     });
-
-    const { default: useAdmissionsStore } = await import(
-      "@/store/admissionsStore"
-    );
 
     await act(async () => {
       await useAdmissionsStore.getState().fetchAdmissions();

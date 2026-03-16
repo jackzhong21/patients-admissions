@@ -36,13 +36,6 @@ class GlobalExceptionHandler {
             .body(ErrorResponse(message = ex.message ?: "Invalid admission type", status = 409))
     }
 
-    @ExceptionHandler(DuplicateExternalSystemIdException::class)
-    fun handleDuplicate(ex: DuplicateExternalSystemIdException): ResponseEntity<ErrorResponse> {
-        log.warn("Duplicate external system ID: {}", ex.message)
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-            .body(ErrorResponse(message = ex.message ?: "Duplicate external system ID", status = 409))
-    }
-
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun handleUnreadable(ex: HttpMessageNotReadableException): ResponseEntity<ErrorResponse> {
         log.warn("Malformed or unreadable request body: {}", ex.message)

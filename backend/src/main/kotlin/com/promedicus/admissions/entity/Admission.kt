@@ -1,6 +1,7 @@
 package com.promedicus.admissions.entity
 
 import jakarta.persistence.*
+import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.Instant
@@ -35,6 +36,7 @@ data class Admission(
     @Column(name = "external_system_id", updatable = false)
     val externalSystemId: String? = null,
 
+    @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     val createdAt: Instant = Instant.now(),
 

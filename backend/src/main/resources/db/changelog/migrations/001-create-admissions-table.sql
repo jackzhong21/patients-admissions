@@ -15,10 +15,5 @@ CREATE TABLE admissions (
     CONSTRAINT chk_category CHECK (category IN ('NORMAL','INPATIENT','EMERGENCY','OUTPATIENT'))
 );
 
--- changeset promedicus:002-create-admissions-indexes
-CREATE UNIQUE INDEX idx_admissions_external_system_id
-    ON admissions (external_system_id)
-    WHERE external_system_id IS NOT NULL;
-
 CREATE INDEX idx_admissions_date_of_admission
     ON admissions (date_of_admission DESC);

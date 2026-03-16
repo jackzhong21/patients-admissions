@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { format } from 'date-fns';
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Paper from "@mui/material/Paper";
@@ -84,7 +85,7 @@ export default function AdmissionTable({
               admissions.map((admission) => (
                 <TableRow key={admission.id} hover>
                   <TableCell>{admission.name}</TableCell>
-                  <TableCell>{admission.birthday}</TableCell>
+                  <TableCell>{format(new Date(admission.birthday), 'dd/MM/yyyy')}</TableCell>
                   <TableCell>{admission.sex}</TableCell>
                   <TableCell>
                     <Chip label={admission.category} size="small" />

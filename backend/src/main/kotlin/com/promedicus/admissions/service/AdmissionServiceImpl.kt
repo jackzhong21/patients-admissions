@@ -3,7 +3,6 @@ package com.promedicus.admissions.service
 import com.promedicus.admissions.dto.*
 import com.promedicus.admissions.entity.Admission
 import com.promedicus.admissions.exception.AdmissionNotFoundException
-import com.promedicus.admissions.exception.DuplicateExternalSystemIdException
 import com.promedicus.admissions.exception.InvalidAdmissionTypeException
 import com.promedicus.admissions.repository.AdmissionRepository
 import org.springframework.data.domain.Pageable
@@ -65,10 +64,6 @@ class AdmissionServiceImpl(
     }
 
     override fun createExternal(request: ExternalAdmissionRequest): AdmissionResponse {
-        if (admissionRepository.existsByExternalSystemId(request.externalSystemId)) {
-            throw DuplicateExternalSystemIdException(request.externalSystemId)
-        }
-
         val admission = Admission(
             name = request.name,
             birthday = request.birthday,

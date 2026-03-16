@@ -7,5 +7,4 @@ import java.util.UUID
 
 @Repository
 interface AdmissionRepository : JpaRepository<Admission, UUID> {
-    fun existsByExternalSystemId(externalSystemId: String): Boolean
 }

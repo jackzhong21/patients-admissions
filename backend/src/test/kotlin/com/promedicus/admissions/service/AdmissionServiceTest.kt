@@ -6,7 +6,6 @@ import com.promedicus.admissions.entity.Admission
 import com.promedicus.admissions.entity.Category
 import com.promedicus.admissions.entity.Sex
 import com.promedicus.admissions.exception.AdmissionNotFoundException
-import com.promedicus.admissions.exception.DuplicateExternalSystemIdException
 import com.promedicus.admissions.exception.InvalidAdmissionTypeException
 import com.promedicus.admissions.repository.AdmissionRepository
 import org.junit.jupiter.api.Assertions.*
@@ -105,25 +104,6 @@ class AdmissionServiceTest {
         assertEquals("EXT-001", response.externalSystemId)
         assertEquals("John External", response.name)
     }
-
-    @Test
-    fun `createExternal - throws DuplicateExternalSystemIdException for duplicate externalSystemId`() {
-        savedExternal(externalSystemId = "EXT-DUP")
-
-        val request = ExternalAdmissionRequest(
-            name = "Another",
-            birthday = LocalDate.of(1990, 1, 1),
-            sex = Sex.UNKNOWN,
-            category = Category.NORMAL,
-            externalSystemId = "EXT-DUP"
-        )
-
-        assertThrows<DuplicateExternalSystemIdException> {
-            admissionService.createExternal(request)
-        }
-    }
-
-    // ── update ───────────────────────────────────────────────────────────────
 
     @Test
     fun `update - modifies all four fields`() {

@@ -73,7 +73,6 @@ class AdmissionController(private val admissionService: AdmissionService) {
     @ApiResponses(
         ApiResponse(responseCode = "201", description = "External admission created"),
         ApiResponse(responseCode = "400", description = "Validation error"),
-        ApiResponse(responseCode = "409", description = "Duplicate external system ID")
     )
     fun createExternal(@Valid @RequestBody request: ExternalAdmissionRequest): ResponseEntity<AdmissionResponse> {
         return ResponseEntity.status(HttpStatus.CREATED).body(admissionService.createExternal(request))
