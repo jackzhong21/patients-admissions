@@ -1,5 +1,7 @@
 # Patient Admissions Management System
 
+<img width="1912" height="953" alt="Screenshot 2026-03-17 at 9 29 06 pm" src="https://github.com/user-attachments/assets/1ed5c5b1-e98a-40a6-b654-178722640862" />
+
 A full-stack application for managing hospital patient admission records, supporting both regular and external (third-party system) admissions.
 
 ## Tech Stack
