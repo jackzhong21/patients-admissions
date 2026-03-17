@@ -34,6 +34,7 @@ export default function AdmissionForm({ mode, admission }: AdmissionFormProps) {
   const router = useRouter();
   const isExternal = mode === "edit-external";
 
+  const [dateOfAdmission] = useState(admission?.dateOfAdmission ?? "")
   const [name, setName] = useState(admission?.name ?? "");
   const [birthday, setBirthday] = useState(admission?.birthday ?? "");
   const [sex, setSex] = useState<string>(admission?.sex ?? "");
@@ -95,6 +96,10 @@ export default function AdmissionForm({ mode, admission }: AdmissionFormProps) {
 
       <Box component="form" onSubmit={handleSubmit} noValidate>
         <Stack spacing={3}>
+          {dateOfAdmission && dateOfAdmission.trim() !== "" && (<Box display="flex" alignItems="center">
+            <Typography variant="body1" mr={2}>Admission</Typography>
+            <Typography variant="body1">{new Date(dateOfAdmission).toLocaleString('en-AU')}</Typography>
+          </Box>)}
           <TextField
             label="Name"
             value={name}
