@@ -125,7 +125,7 @@ export default function AdmissionForm({ mode, admission }: AdmissionFormProps) {
               value={sex}
               label="Sex"
               onChange={(e) => setSex(e.target.value)}
-              inputProps={{ "data-testid": "sex-select" }}
+              SelectDisplayProps={{ "data-testid": "sex-select" }}
             >
               {Object.values(Sex).map((s) => (
                 <MenuItem key={s} value={s}>
@@ -144,7 +144,7 @@ export default function AdmissionForm({ mode, admission }: AdmissionFormProps) {
               value={category}
               label="Category"
               onChange={(e) => setCategory(e.target.value)}
-              inputProps={{ "data-testid": "category-select" }}
+              SelectDisplayProps={{ "data-testid": "category-select" }}
             >
               {Object.values(Category).map((c) => (
                 <MenuItem key={c} value={c}>

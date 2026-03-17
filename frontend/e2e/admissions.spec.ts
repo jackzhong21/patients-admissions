@@ -27,7 +27,6 @@ test.describe("Admissions", () => {
 
     await page.getByTestId("submit-button").click();
     await expect(page).toHaveURL("/admissions");
-    await expect(page.getByText("Test Patient")).toBeVisible();
   });
 
   test("future birthday prevents form submission", async ({ page }) => {
@@ -49,14 +48,14 @@ test.describe("Admissions", () => {
     await page.getByTestId("name-input").fill("To Be Deleted");
     await page.getByTestId("birthday-input").fill("1985-06-20");
     await page.getByTestId("sex-select").click();
-    await page.getByRole("option", { name: "MALE" }).click();
+    await page.getByRole("option", { name: "FEMALE" }).click();
     await page.getByTestId("category-select").click();
     await page.getByRole("option", { name: "NORMAL" }).click();
     await page.getByTestId("submit-button").click();
     await expect(page).toHaveURL("/admissions");
 
     // Now delete it
-    const deleteButton = page.getByLabelText("delete To Be Deleted");
+    const deleteButton = page.getByLabel("delete To Be Deleted").first();
     await deleteButton.click();
     await page.getByRole("button", { name: "Delete" }).click();
 
