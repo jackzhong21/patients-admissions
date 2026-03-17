@@ -109,7 +109,7 @@ npx playwright test
 ```
 ├── backend/          Spring Boot application
 ├── frontend/         Next.js application
-├── e2e/              Playwright E2E tests
+│   ├── e2e/          Playwright E2E tests
 ├── docker-compose.yml
 └── README.md
 ```
