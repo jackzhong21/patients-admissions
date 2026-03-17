@@ -1,14 +1,19 @@
 package com.promedicus.admissions.service
 
 import com.promedicus.admissions.TestcontainersConfig
-import com.promedicus.admissions.dto.*
+import com.promedicus.admissions.dto.AdmissionRequest
+import com.promedicus.admissions.dto.AdmissionUpdateRequest
+import com.promedicus.admissions.dto.ExternalAdmissionRequest
+import com.promedicus.admissions.dto.ExternalAdmissionUpdateRequest
 import com.promedicus.admissions.entity.Admission
 import com.promedicus.admissions.entity.Category
 import com.promedicus.admissions.entity.Sex
 import com.promedicus.admissions.exception.AdmissionNotFoundException
 import com.promedicus.admissions.exception.InvalidAdmissionTypeException
 import com.promedicus.admissions.repository.AdmissionRepository
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -22,7 +27,6 @@ import java.util.UUID
 
 @SpringBootTest
 class AdmissionServiceTest {
-
     @Autowired
     private lateinit var admissionService: AdmissionService
 
@@ -50,32 +54,40 @@ class AdmissionServiceTest {
         name: String = "Jane Doe",
         birthday: LocalDate = LocalDate.of(1990, 5, 15),
         sex: Sex = Sex.FEMALE,
-        category: Category = Category.INPATIENT
-    ): Admission = admissionRepository.save(
-        Admission(name = name, birthday = birthday, sex = sex, category = category)
-    )
+        category: Category = Category.INPATIENT,
+    ): Admission =
+        admissionRepository.save(
+            Admission(name = name, birthday = birthday, sex = sex, category = category),
+        )
 
     private fun savedExternal(
         name: String = "John External",
         birthday: LocalDate = LocalDate.of(1985, 3, 10),
         sex: Sex = Sex.MALE,
         category: Category = Category.OUTPATIENT,
-        externalSystemId: String = "EXT-001"
-    ): Admission = admissionRepository.save(
-        Admission(name = name, birthday = birthday, sex = sex, category = category,
-            externalSystemId = externalSystemId)
-    )
+        externalSystemId: String = "EXT-001",
+    ): Admission =
+        admissionRepository.save(
+            Admission(
+                name = name,
+                birthday = birthday,
+                sex = sex,
+                category = category,
+                externalSystemId = externalSystemId,
+            ),
+        )
 
     // ── create ───────────────────────────────────────────────────────────────
 
     @Test
     fun `create - persists admission and returns mapped response`() {
-        val request = AdmissionRequest(
-            name = "Jane Doe",
-            birthday = LocalDate.of(1990, 5, 15),
-            sex = Sex.FEMALE,
-            category = Category.INPATIENT
-        )
+        val request =
+            AdmissionRequest(
+                name = "Jane Doe",
+                birthday = LocalDate.of(1990, 5, 15),
+                sex = Sex.FEMALE,
+                category = Category.INPATIENT,
+            )
 
         val response = admissionService.create(request)
 
@@ -91,13 +103,14 @@ class AdmissionServiceTest {
 
     @Test
     fun `createExternal - persists admission with externalSystemId`() {
-        val request = ExternalAdmissionRequest(
-            name = "John External",
-            birthday = LocalDate.of(1985, 3, 10),
-            sex = Sex.MALE,
-            category = Category.OUTPATIENT,
-            externalSystemId = "EXT-001"
-        )
+        val request =
+            ExternalAdmissionRequest(
+                name = "John External",
+                birthday = LocalDate.of(1985, 3, 10),
+                sex = Sex.MALE,
+                category = Category.OUTPATIENT,
+                externalSystemId = "EXT-001",
+            )
 
         val response = admissionService.createExternal(request)
 
@@ -109,12 +122,13 @@ class AdmissionServiceTest {
     fun `update - modifies all four fields`() {
         val admission = savedRegular()
 
-        val request = AdmissionUpdateRequest(
-            name = "Updated Name",
-            birthday = LocalDate.of(2000, 1, 1),
-            sex = Sex.MALE,
-            category = Category.EMERGENCY
-        )
+        val request =
+            AdmissionUpdateRequest(
+                name = "Updated Name",
+                birthday = LocalDate.of(2000, 1, 1),
+                sex = Sex.MALE,
+                category = Category.EMERGENCY,
+            )
 
         val response = admissionService.update(admission.id!!, request)
 
@@ -128,10 +142,13 @@ class AdmissionServiceTest {
     fun `update - throws InvalidAdmissionTypeException when targeting an external admission`() {
         val external = savedExternal()
 
-        val request = AdmissionUpdateRequest(
-            name = "X", birthday = LocalDate.of(1990, 1, 1),
-            sex = Sex.FEMALE, category = Category.NORMAL
-        )
+        val request =
+            AdmissionUpdateRequest(
+                name = "X",
+                birthday = LocalDate.of(1990, 1, 1),
+                sex = Sex.FEMALE,
+                category = Category.NORMAL,
+            )
 
         assertThrows<InvalidAdmissionTypeException> {
             admissionService.update(external.id!!, request)
@@ -140,10 +157,13 @@ class AdmissionServiceTest {
 
     @Test
     fun `update - throws AdmissionNotFoundException for unknown id`() {
-        val request = AdmissionUpdateRequest(
-            name = "X", birthday = LocalDate.of(1990, 1, 1),
-            sex = Sex.FEMALE, category = Category.NORMAL
-        )
+        val request =
+            AdmissionUpdateRequest(
+                name = "X",
+                birthday = LocalDate.of(1990, 1, 1),
+                sex = Sex.FEMALE,
+                category = Category.NORMAL,
+            )
 
         assertThrows<AdmissionNotFoundException> {
             admissionService.update(UUID.randomUUID(), request)
@@ -154,16 +174,20 @@ class AdmissionServiceTest {
 
     @Test
     fun `updateExternal - updates only name, birthday, and sex`() {
-        val external = savedExternal(
-            name = "Original", sex = Sex.MALE, category = Category.OUTPATIENT,
-            externalSystemId = "EXT-002"
-        )
+        val external =
+            savedExternal(
+                name = "Original",
+                sex = Sex.MALE,
+                category = Category.OUTPATIENT,
+                externalSystemId = "EXT-002",
+            )
 
-        val request = ExternalAdmissionUpdateRequest(
-            name = "Updated External",
-            birthday = LocalDate.of(1995, 6, 20),
-            sex = Sex.INTERSEX
-        )
+        val request =
+            ExternalAdmissionUpdateRequest(
+                name = "Updated External",
+                birthday = LocalDate.of(1995, 6, 20),
+                sex = Sex.INTERSEX,
+            )
 
         val response = admissionService.updateExternal(external.id!!, request)
 
@@ -179,9 +203,12 @@ class AdmissionServiceTest {
     fun `updateExternal - throws InvalidAdmissionTypeException when targeting a regular admission`() {
         val regular = savedRegular()
 
-        val request = ExternalAdmissionUpdateRequest(
-            name = "X", birthday = LocalDate.of(1990, 1, 1), sex = Sex.FEMALE
-        )
+        val request =
+            ExternalAdmissionUpdateRequest(
+                name = "X",
+                birthday = LocalDate.of(1990, 1, 1),
+                sex = Sex.FEMALE,
+            )
 
         assertThrows<InvalidAdmissionTypeException> {
             admissionService.updateExternal(regular.id!!, request)

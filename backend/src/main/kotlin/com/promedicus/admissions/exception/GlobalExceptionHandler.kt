@@ -14,12 +14,11 @@ data class FieldErrorDetail(val field: String, val message: String)
 data class ErrorResponse(
     val message: String,
     val errors: List<FieldErrorDetail> = emptyList(),
-    val status: Int
+    val status: Int,
 )
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
-
     private val log = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
 
     @ExceptionHandler(AdmissionNotFoundException::class)
@@ -45,11 +44,12 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidation(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
-        val errors = ex.bindingResult.allErrors.map { error ->
-            val field = (error as? FieldError)?.field ?: "unknown"
-            val message = error.defaultMessage ?: "Invalid value"
-            FieldErrorDetail(field = field, message = message)
-        }
+        val errors =
+            ex.bindingResult.allErrors.map { error ->
+                val field = (error as? FieldError)?.field ?: "unknown"
+                val message = error.defaultMessage ?: "Invalid value"
+                FieldErrorDetail(field = field, message = message)
+            }
         log.warn("Validation failed: {}", errors)
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(ErrorResponse(message = "Validation failed", errors = errors, status = 400))

@@ -16,14 +16,17 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDate
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class AdmissionControllerTest {
-
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -52,21 +55,28 @@ class AdmissionControllerTest {
         name: String = "Jane Doe",
         birthday: LocalDate = LocalDate.of(1990, 5, 15),
         sex: Sex = Sex.FEMALE,
-        category: Category = Category.INPATIENT
-    ): Admission = admissionRepository.save(
-        Admission(name = name, birthday = birthday, sex = sex, category = category)
-    )
+        category: Category = Category.INPATIENT,
+    ): Admission =
+        admissionRepository.save(
+            Admission(name = name, birthday = birthday, sex = sex, category = category),
+        )
 
     private fun savedExternal(
         name: String = "John External",
         birthday: LocalDate = LocalDate.of(1985, 3, 10),
         sex: Sex = Sex.MALE,
         category: Category = Category.OUTPATIENT,
-        externalSystemId: String = "EXT-001"
-    ): Admission = admissionRepository.save(
-        Admission(name = name, birthday = birthday, sex = sex,
-            category = category, externalSystemId = externalSystemId)
-    )
+        externalSystemId: String = "EXT-001",
+    ): Admission =
+        admissionRepository.save(
+            Admission(
+                name = name,
+                birthday = birthday,
+                sex = sex,
+                category = category,
+                externalSystemId = externalSystemId,
+            ),
+        )
 
     private fun json(obj: Any): String = objectMapper.writeValueAsString(obj)
 
@@ -93,17 +103,18 @@ class AdmissionControllerTest {
 
     @Test
     fun `POST create returns 201 with saved admission`() {
-        val body = mapOf(
-            "name" to "Jane Doe",
-            "birthday" to "1990-05-15",
-            "sex" to "FEMALE",
-            "category" to "INPATIENT"
-        )
+        val body =
+            mapOf(
+                "name" to "Jane Doe",
+                "birthday" to "1990-05-15",
+                "sex" to "FEMALE",
+                "category" to "INPATIENT",
+            )
 
         mockMvc.perform(
             post("/api/admissions")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json(body))
+                .content(json(body)),
         )
             .andExpect(status().isCreated)
             .andExpect(jsonPath("$.id").exists())
@@ -117,17 +128,18 @@ class AdmissionControllerTest {
 
     @Test
     fun `POST create with future birthday returns 400 with field error`() {
-        val body = mapOf(
-            "name" to "Jane Doe",
-            "birthday" to "2099-01-01",
-            "sex" to "FEMALE",
-            "category" to "INPATIENT"
-        )
+        val body =
+            mapOf(
+                "name" to "Jane Doe",
+                "birthday" to "2099-01-01",
+                "sex" to "FEMALE",
+                "category" to "INPATIENT",
+            )
 
         mockMvc.perform(
             post("/api/admissions")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json(body))
+                .content(json(body)),
         )
             .andExpect(status().isBadRequest)
             .andExpect(jsonPath("$.status").value(400))
@@ -143,7 +155,7 @@ class AdmissionControllerTest {
         mockMvc.perform(
             post("/api/admissions")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json(body))
+                .content(json(body)),
         )
             .andExpect(status().isBadRequest)
             .andExpect(jsonPath("$.status").value(400))
@@ -152,17 +164,18 @@ class AdmissionControllerTest {
     @Test
     fun `PUT update returns 200 with updated fields`() {
         val admission = savedRegular()
-        val body = mapOf(
-            "name" to "Updated Name",
-            "birthday" to "2000-06-01",
-            "sex" to "MALE",
-            "category" to "EMERGENCY"
-        )
+        val body =
+            mapOf(
+                "name" to "Updated Name",
+                "birthday" to "2000-06-01",
+                "sex" to "MALE",
+                "category" to "EMERGENCY",
+            )
 
         mockMvc.perform(
             put("/api/admissions/${admission.id}")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json(body))
+                .content(json(body)),
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.name").value("Updated Name"))
@@ -172,17 +185,18 @@ class AdmissionControllerTest {
 
     @Test
     fun `PUT update returns 404 when admission does not exist`() {
-        val body = mapOf(
-            "name" to "X",
-            "birthday" to "1990-01-01",
-            "sex" to "FEMALE",
-            "category" to "NORMAL"
-        )
+        val body =
+            mapOf(
+                "name" to "X",
+                "birthday" to "1990-01-01",
+                "sex" to "FEMALE",
+                "category" to "NORMAL",
+            )
 
         mockMvc.perform(
             put("/api/admissions/00000000-0000-0000-0000-000000000000")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json(body))
+                .content(json(body)),
         )
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.status").value(404))
@@ -191,17 +205,18 @@ class AdmissionControllerTest {
     @Test
     fun `PUT update on external admission returns 409`() {
         val external = savedExternal()
-        val body = mapOf(
-            "name" to "X",
-            "birthday" to "1990-01-01",
-            "sex" to "FEMALE",
-            "category" to "NORMAL"
-        )
+        val body =
+            mapOf(
+                "name" to "X",
+                "birthday" to "1990-01-01",
+                "sex" to "FEMALE",
+                "category" to "NORMAL",
+            )
 
         mockMvc.perform(
             put("/api/admissions/${external.id}")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json(body))
+                .content(json(body)),
         )
             .andExpect(status().isConflict)
             .andExpect(jsonPath("$.status").value(409))
@@ -226,18 +241,19 @@ class AdmissionControllerTest {
 
     @Test
     fun `POST external returns 201 with externalSystemId set`() {
-        val body = mapOf(
-            "name" to "John External",
-            "birthday" to "1985-03-10",
-            "sex" to "MALE",
-            "category" to "OUTPATIENT",
-            "externalSystemId" to "EXT-100"
-        )
+        val body =
+            mapOf(
+                "name" to "John External",
+                "birthday" to "1985-03-10",
+                "sex" to "MALE",
+                "category" to "OUTPATIENT",
+                "externalSystemId" to "EXT-100",
+            )
 
         mockMvc.perform(
             post("/api/admissions/external")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json(body))
+                .content(json(body)),
         )
             .andExpect(status().isCreated)
             .andExpect(jsonPath("$.externalSystemId").value("EXT-100"))
@@ -246,26 +262,30 @@ class AdmissionControllerTest {
 
     @Test
     fun `PUT external updates only name, birthday, sex - category unchanged`() {
-        val external = savedExternal(
-            name = "Original", sex = Sex.MALE, category = Category.OUTPATIENT,
-            externalSystemId = "EXT-200"
-        )
-        val body = mapOf(
-            "name" to "Updated External",
-            "birthday" to "1995-06-20",
-            "sex" to "INTERSEX"
-        )
+        val external =
+            savedExternal(
+                name = "Original",
+                sex = Sex.MALE,
+                category = Category.OUTPATIENT,
+                externalSystemId = "EXT-200",
+            )
+        val body =
+            mapOf(
+                "name" to "Updated External",
+                "birthday" to "1995-06-20",
+                "sex" to "INTERSEX",
+            )
 
         mockMvc.perform(
             put("/api/admissions/external/${external.id}")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json(body))
+                .content(json(body)),
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.name").value("Updated External"))
             .andExpect(jsonPath("$.sex").value("INTERSEX"))
-            .andExpect(jsonPath("$.category").value("OUTPATIENT"))       // unchanged
-            .andExpect(jsonPath("$.externalSystemId").value("EXT-200"))  // unchanged
+            .andExpect(jsonPath("$.category").value("OUTPATIENT")) // unchanged
+            .andExpect(jsonPath("$.externalSystemId").value("EXT-200")) // unchanged
     }
 
     @Test
@@ -276,10 +296,9 @@ class AdmissionControllerTest {
         mockMvc.perform(
             put("/api/admissions/external/${regular.id}")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json(body))
+                .content(json(body)),
         )
             .andExpect(status().isConflict)
             .andExpect(jsonPath("$.status").value(409))
     }
-
 }

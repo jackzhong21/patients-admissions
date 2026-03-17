@@ -1,6 +1,11 @@
 package com.promedicus.admissions.service
 
-import com.promedicus.admissions.dto.*
+import com.promedicus.admissions.dto.AdmissionRequest
+import com.promedicus.admissions.dto.AdmissionResponse
+import com.promedicus.admissions.dto.AdmissionUpdateRequest
+import com.promedicus.admissions.dto.ExternalAdmissionRequest
+import com.promedicus.admissions.dto.ExternalAdmissionUpdateRequest
+import com.promedicus.admissions.dto.PagedResponse
 import com.promedicus.admissions.entity.Admission
 import com.promedicus.admissions.exception.AdmissionNotFoundException
 import com.promedicus.admissions.exception.InvalidAdmissionTypeException
@@ -13,9 +18,8 @@ import java.util.UUID
 @Service
 @Transactional
 class AdmissionServiceImpl(
-    private val admissionRepository: AdmissionRepository
+    private val admissionRepository: AdmissionRepository,
 ) : AdmissionService {
-
     @Transactional(readOnly = true)
     override fun list(pageable: Pageable): PagedResponse<AdmissionResponse> {
         val page = admissionRepository.findAll(pageable)
@@ -24,27 +28,32 @@ class AdmissionServiceImpl(
             totalElements = page.totalElements,
             totalPages = page.totalPages,
             page = page.number,
-            size = page.size
+            size = page.size,
         )
     }
 
     override fun create(request: AdmissionRequest): AdmissionResponse {
-        val admission = Admission(
-            name = request.name,
-            birthday = request.birthday,
-            sex = request.sex,
-            category = request.category
-        )
+        val admission =
+            Admission(
+                name = request.name,
+                birthday = request.birthday,
+                sex = request.sex,
+                category = request.category,
+            )
         return AdmissionResponse.from(admissionRepository.save(admission))
     }
 
-    override fun update(id: UUID, request: AdmissionUpdateRequest): AdmissionResponse {
-        val admission = admissionRepository.findById(id)
-            .orElseThrow { AdmissionNotFoundException(id) }
+    override fun update(
+        id: UUID,
+        request: AdmissionUpdateRequest,
+    ): AdmissionResponse {
+        val admission =
+            admissionRepository.findById(id)
+                .orElseThrow { AdmissionNotFoundException(id) }
 
         if (admission.externalSystemId != null) {
             throw InvalidAdmissionTypeException(
-                "Cannot update external admission (id=$id) via regular update endpoint"
+                "Cannot update external admission (id=$id) via regular update endpoint",
             )
         }
 
@@ -64,23 +73,28 @@ class AdmissionServiceImpl(
     }
 
     override fun createExternal(request: ExternalAdmissionRequest): AdmissionResponse {
-        val admission = Admission(
-            name = request.name,
-            birthday = request.birthday,
-            sex = request.sex,
-            category = request.category,
-            externalSystemId = request.externalSystemId
-        )
+        val admission =
+            Admission(
+                name = request.name,
+                birthday = request.birthday,
+                sex = request.sex,
+                category = request.category,
+                externalSystemId = request.externalSystemId,
+            )
         return AdmissionResponse.from(admissionRepository.save(admission))
     }
 
-    override fun updateExternal(id: UUID, request: ExternalAdmissionUpdateRequest): AdmissionResponse {
-        val admission = admissionRepository.findById(id)
-            .orElseThrow { AdmissionNotFoundException(id) }
+    override fun updateExternal(
+        id: UUID,
+        request: ExternalAdmissionUpdateRequest,
+    ): AdmissionResponse {
+        val admission =
+            admissionRepository.findById(id)
+                .orElseThrow { AdmissionNotFoundException(id) }
 
         if (admission.externalSystemId == null) {
             throw InvalidAdmissionTypeException(
-                "Cannot update regular admission (id=$id) via external update endpoint"
+                "Cannot update regular admission (id=$id) via external update endpoint",
             )
         }
 

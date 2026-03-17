@@ -5,5 +5,5 @@ data class PagedResponse<T>(
     val totalElements: Long,
     val totalPages: Int,
     val page: Int,
-    val size: Int
+    val size: Int,
 )

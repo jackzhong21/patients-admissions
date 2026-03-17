@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
-interface AdmissionRepository : JpaRepository<Admission, UUID> {
-}
+interface AdmissionRepository : JpaRepository<Admission, UUID>

@@ -8,13 +8,13 @@ import org.testcontainers.containers.PostgreSQLContainer
  * container automatically when the JVM exits.
  */
 object TestcontainersConfig {
-
-    val postgres: PostgreSQLContainer<*> = object : PostgreSQLContainer<Nothing>("postgres:16-alpine") {
-        init {
-            withDatabaseName("admissions")
-            withUsername("admissions")
-            withPassword("admissions")
-            addFixedExposedPort(11111, 5432)
-        }
-    }.also { it.start() }
+    val postgres: PostgreSQLContainer<*> =
+        object : PostgreSQLContainer<Nothing>("postgres:16-alpine") {
+            init {
+                withDatabaseName("admissions")
+                withUsername("admissions")
+                withPassword("admissions")
+                addFixedExposedPort(11111, 5432)
+            }
+        }.also { it.start() }
 }

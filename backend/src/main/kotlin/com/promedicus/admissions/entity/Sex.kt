@@ -4,5 +4,5 @@ enum class Sex {
     FEMALE,
     MALE,
     INTERSEX,
-    UNKNOWN
+    UNKNOWN,
 }

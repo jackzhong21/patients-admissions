@@ -10,14 +10,11 @@ import java.time.LocalDate
 data class AdmissionRequest(
     @field:NotBlank(message = "Name is required")
     val name: String,
-
     @field:NotNull(message = "Birthday is required")
     @field:PastOrPresent(message = "Birthday cannot be in the future")
     val birthday: LocalDate,
-
     @field:NotNull(message = "Sex is required")
     val sex: Sex,
-
     @field:NotNull(message = "Category is required")
-    val category: Category
+    val category: Category,
 )

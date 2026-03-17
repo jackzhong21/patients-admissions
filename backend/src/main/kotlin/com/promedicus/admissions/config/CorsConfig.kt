@@ -8,7 +8,6 @@ import org.springframework.web.filter.CorsFilter
 
 @Configuration
 class CorsConfig {
-
     @Bean
     fun corsFilter(): CorsFilter {
         val config = CorsConfiguration()

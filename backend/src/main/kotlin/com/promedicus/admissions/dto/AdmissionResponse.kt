@@ -16,19 +16,20 @@ data class AdmissionResponse(
     val dateOfAdmission: Instant,
     val externalSystemId: String?,
     val createdAt: Instant,
-    val updatedAt: Instant
+    val updatedAt: Instant,
 ) {
     companion object {
-        fun from(admission: Admission) = AdmissionResponse(
-            id = admission.id!!,
-            name = admission.name,
-            birthday = admission.birthday,
-            sex = admission.sex,
-            category = admission.category,
-            dateOfAdmission = admission.dateOfAdmission,
-            externalSystemId = admission.externalSystemId,
-            createdAt = admission.createdAt,
-            updatedAt = admission.updatedAt
-        )
+        fun from(admission: Admission) =
+            AdmissionResponse(
+                id = admission.id!!,
+                name = admission.name,
+                birthday = admission.birthday,
+                sex = admission.sex,
+                category = admission.category,
+                dateOfAdmission = admission.dateOfAdmission,
+                externalSystemId = admission.externalSystemId,
+                createdAt = admission.createdAt,
+                updatedAt = admission.updatedAt,
+            )
     }
 }

@@ -4,5 +4,5 @@ enum class Category {
     NORMAL,
     INPATIENT,
     EMERGENCY,
-    OUTPATIENT
+    OUTPATIENT,
 }
