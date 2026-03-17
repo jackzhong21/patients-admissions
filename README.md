@@ -17,7 +17,7 @@ A full-stack application for managing hospital patient admission records, suppor
 - Gradle 8.6
 
 ## Demo - Patient Admissions (Click to open)
-[![Watch the video](https://i9.ytimg.com/vi_webp/CX79CegJ2MQ/maxresdefault.webp?v=69b8a423&sqp=CIzI4s0G&rs=AOn4CLCfSvEx5ADjHdT3HTFx5xxZUMswxQ)](https://youtu.be/CX79CegJ2MQ)
+[![Watch the video](https://drive.google.com/file/d/1J1occRX7X3wG5HaQXvaUeiVRHUDk6PkB/view?usp=sharing)](https://youtu.be/CX79CegJ2MQ)
 
 ## Quick Start
 
