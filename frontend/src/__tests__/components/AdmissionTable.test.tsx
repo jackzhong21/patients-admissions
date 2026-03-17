@@ -65,7 +65,7 @@ describe("AdmissionTable", () => {
       />
     );
     expect(screen.getByText("Jane Doe")).toBeInTheDocument();
-    expect(screen.getByText("1990-05-15")).toBeInTheDocument();
+    expect(screen.getByText("15/05/1990")).toBeInTheDocument();
   });
 
   it("opens delete dialog when delete button clicked", () => {
